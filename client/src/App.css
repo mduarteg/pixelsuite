@@ -1,0 +1,24 @@
+.topnav {
+  background-color: rgb(51, 51, 51);
+  overflow: hidden;
+  height: 5vh;
+  color: #fff;
+}
+
+.body {
+  height: 95vh;
+  background-color: rgb(219, 219, 219);
+}
+
+.login-form {
+  max-width: 300px;
+  margin-top: 2rem;
+}
+
+.login-form-forgot {
+  float: right;
+}
+
+.login-form-button {
+  width: 100%;
+}
