@@ -3,12 +3,12 @@ package me.mduarteg.pixelsuite.wrapper;
 import io.quarkus.runtime.annotations.RegisterForReflection;
 
 @RegisterForReflection
-public class ExceptionWrapper<T> {
+public class ExceptionWrapper {
     private String code;
     private String message;
-    private T errorObject;
+    private Object errorObject;
 
-    public ExceptionWrapper(String code, String message, T errorObject) {
+    public ExceptionWrapper(String code, String message, Object errorObject) {
         this.code = code;
         this.message = message;
         this.errorObject = errorObject;
@@ -30,11 +30,11 @@ public class ExceptionWrapper<T> {
         this.message = message;
     }
 
-    public T getErrorObject() {
+    public Object getErrorObject() {
         return errorObject;
     }
 
-    public void setErrorObject(T errorObject) {
+    public void setErrorObject(Object errorObject) {
         this.errorObject = errorObject;
     }
 

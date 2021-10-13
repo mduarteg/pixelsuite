@@ -8,6 +8,8 @@ import me.mduarteg.pixelsuite.wrapper.MissingProductObjidException;
 import me.mduarteg.pixelsuite.wrapper.ResponseWrapper;
 import org.jboss.logging.Logger;
 
+import javax.annotation.security.RolesAllowed;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -19,6 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Path("/product")
+@RequestScoped
 public class ProductResource {
 
     private static final Logger LOGGER = Logger.getLogger(ProductResource.class);
@@ -30,9 +33,10 @@ public class ProductResource {
     ProductService productService;
 
     @GET
+    @RolesAllowed(value = { "USER" })
     public Response getAllProducts() {
         ResponseWrapper<List<Product>> response =
-                new ResponseWrapper<>(PixelConstants.Messages.PRODUCT_GET_ALL, productService.getAllProducts());
+                new ResponseWrapper<>(PixelConstants.PRODUCT_GET_ALL, productService.getAllProducts());
 
         return Response.ok(response).build();
     }
@@ -46,13 +50,13 @@ public class ProductResource {
             product = productService.getOneProduct(productId);
         } catch (NoSuchElementException ex) {
             ExceptionWrapper exceptionWrapper =
-                    new ExceptionWrapper(PixelConstants.Exceptions.PRODUCT_NOT_FOUND, ex.getMessage(), null);
+                    new ExceptionWrapper(PixelConstants.PRODUCT_NOT_FOUND, ex.getMessage(), null);
             LOGGER.error(exceptionWrapper);
             return Response.status(404).entity(exceptionWrapper).build();
         }
 
         ResponseWrapper<Product> response =
-                new ResponseWrapper<>(PixelConstants.Messages.PRODUCT_GET_ONE, product);
+                new ResponseWrapper<>(PixelConstants.PRODUCT_GET_ONE, product);
 
         return Response.ok(response).build();
     }
@@ -65,7 +69,7 @@ public class ProductResource {
             Product newProduct = productService.saveProduct(product);
 
             ResponseWrapper<Product> response =
-                    new ResponseWrapper<>(PixelConstants.Messages.PRODUCT_SAVE_ONE, newProduct);
+                    new ResponseWrapper<>(PixelConstants.PRODUCT_SAVE_ONE, newProduct);
 
             return Response.ok(response).build();
         } else {
@@ -74,8 +78,8 @@ public class ProductResource {
                     .map(ConstraintViolation::getMessageTemplate)
                     .collect(Collectors.toList());
 
-            ExceptionWrapper<List<String> > exceptionWrapper =
-                    new ExceptionWrapper<>(PixelConstants.Exceptions.PRODUCT_VALIDATION_ERROR, "", resultViolations);
+            ExceptionWrapper exceptionWrapper =
+                    new ExceptionWrapper(PixelConstants.PRODUCT_VALIDATION_ERROR, "", resultViolations);
 
             return Response.status(400).entity(exceptionWrapper).build();
         }
@@ -91,14 +95,14 @@ public class ProductResource {
             try {
                 updatedProduct = productService.updateProduct(product);
             } catch (MissingProductObjidException e) {
-                ExceptionWrapper<List<String> > exceptionWrapper =
-                        new ExceptionWrapper<>(PixelConstants.Exceptions.PRODUCT_UPDATE_ERROR, "", null);
+                ExceptionWrapper exceptionWrapper =
+                        new ExceptionWrapper(PixelConstants.PRODUCT_UPDATE_ERROR, "", null);
 
                 return Response.status(400).entity(exceptionWrapper).build();
             }
 
             ResponseWrapper<Product> response =
-                    new ResponseWrapper<>(PixelConstants.Messages.PRODUCT_UPDATE, updatedProduct);
+                    new ResponseWrapper<>(PixelConstants.PRODUCT_UPDATE, updatedProduct);
 
             return Response.ok(response).build();
         } else {
@@ -107,8 +111,8 @@ public class ProductResource {
                     .map(ConstraintViolation::getMessageTemplate)
                     .collect(Collectors.toList());
 
-            ExceptionWrapper<List<String> > exceptionWrapper =
-                    new ExceptionWrapper<>(PixelConstants.Exceptions.PRODUCT_VALIDATION_ERROR, "", resultViolations);
+            ExceptionWrapper exceptionWrapper =
+                    new ExceptionWrapper(PixelConstants.PRODUCT_VALIDATION_ERROR, "", resultViolations);
 
             return Response.status(400).entity(exceptionWrapper).build();
         }
@@ -118,7 +122,7 @@ public class ProductResource {
     public Response deleteAllProducts() {
         Long result = productService.deleteAll();
         ResponseWrapper<Long> response =
-                new ResponseWrapper<>(PixelConstants.Messages.PRODUCT_DELETE_ALL, result);
+                new ResponseWrapper<>(PixelConstants.PRODUCT_DELETE_ALL, result);
 
         return Response.ok(response).build();
     }
